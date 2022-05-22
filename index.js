@@ -29,7 +29,14 @@ const run = async()=> {
         const data = await userCollection.find().toArray()
         res.send(data)
     })
-   
+    app.get("/users/:email",verify,async(req,res)=> {
+        const email = req.params.email
+        const query = {email:email}
+        const data = await userCollection.findOne(query)
+        const isAdmin = data.role === "admin"
+        res.send({admin:isAdmin,data:data})
+    })
+
 
     const verifyAdmin = async(req,res,next)=> {
         const requester = req.decoded.email
