@@ -21,21 +21,21 @@ const run = async()=> {
 
     //    COLLECTIONS.................................
     const userCollection = client.db("falcon-electronics").collection("users")
+    const productCollection = client.db("falcon-electronics").collection("products")
 
     // all routes,,,,,,,,,,,,,,,,,,,,,,,,,
-    
+    const verifyAdmin = async(req,res,next)=> {
+        const requester = req.decoded.email
+        const requesterData = await userCollection.findOne({email:requester})
+        if(requesterData.role === "admin"){
+        next()
+        }else{
+          res.status(403).send("unAuthorize access")
+        }
+  
+      }
 
-    app.get("/users",verify,async(req,res)=> {
-        const data = await userCollection.find().toArray()
-        res.send(data)
-    })
-    app.get("/users/:email",verify,async(req,res)=> {
-        const email = req.params.email
-        const query = {email:email}
-        const data = await userCollection.findOne(query)
-        const isAdmin = data.role === "admin"
-        res.send({admin:isAdmin,data:data})
-    })
+      
 
     app.put("/users/:email",async(req,res)=> {
         const email = req.params.email
@@ -57,7 +57,17 @@ const run = async()=> {
         res.send({result,token})
     })
 
-  
+    app.get("/users",verify,async(req,res)=> {
+        const data = await userCollection.find().toArray()
+        res.send(data)
+    })
+    app.get("/users/:email",verify,async(req,res)=> {
+        const email = req.params.email
+        const query = {email:email}
+        const data = await userCollection.findOne(query)
+        const isAdmin = data.role === "admin"
+        res.send({admin:isAdmin,data:data})
+    })
 
     app.patch("/users/:email",verify,verifyAdmin,async(req,res)=> {
         const email = req.params.email
@@ -75,17 +85,14 @@ const run = async()=> {
         res.send({token})
 
     })
+    // =========================products apis======================================
+    app.post("/product",async(req,res)=> {
+        const obj = req.body
+        const result = await productCollection.insertOne(obj)
+        console.log(result)
+        res.send(result)
 
-    const verifyAdmin = async(req,res,next)=> {
-        const requester = req.decoded.email
-        const requesterData = await userCollection.findOne({email:requester})
-        if(requesterData.role === "admin"){
-        next()
-        }else{
-          res.status(403).send("unAuthorize access")
-        }
-  
-      }
+    })
         
     } finally{
 
