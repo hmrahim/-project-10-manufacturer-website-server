@@ -37,6 +37,20 @@ const run = async()=> {
         res.send({admin:isAdmin,data:data})
     })
 
+    app.put("/users/:email",async(req,res)=> {
+        const email = req.params.email
+        const data= req.body
+
+        const query = {email:email}
+        const options = {upsert:true}
+        const docs = {
+            $set:{
+                email:data.email,
+                name:data.name,
+               
+            }
+        }
+
 
     const verifyAdmin = async(req,res,next)=> {
         const requester = req.decoded.email
