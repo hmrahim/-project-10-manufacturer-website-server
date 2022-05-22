@@ -70,7 +70,11 @@ const run = async()=> {
         console.log(result);
     })
 
-  
+    app.put("/maketoken/:email",(req,res)=> {
+        const token = jwt.sign({ email:email }, process.env.JWT_SECRET);
+        res.send({token})
+
+    })
 
     const verifyAdmin = async(req,res,next)=> {
         const requester = req.decoded.email
