@@ -29,13 +29,7 @@ const run = async()=> {
         const data = await userCollection.find().toArray()
         res.send(data)
     })
-    
-
-
-
-
-
-    
+   
 
     const verifyAdmin = async(req,res,next)=> {
         const requester = req.decoded.email
