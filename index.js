@@ -120,6 +120,13 @@ const run = async()=> {
         
         res.send(data)
     })
+    app.delete("/product/:id",async(req,res)=> {
+        const id = req.params.id
+        const query = {_id:ObjectId(id)}
+        const data = await productCollection.deleteOne(query)
+        
+        res.send(data)
+    })
         
     } finally{
 
