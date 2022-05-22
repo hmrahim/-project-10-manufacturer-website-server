@@ -51,6 +51,26 @@ const run = async()=> {
             }
         }
 
+        const result = await userCollection.updateOne(query,docs,options)
+        const token = jwt.sign({ email:email }, process.env.JWT_SECRET);
+        console.log(result);
+        res.send({result,token})
+    })
+
+  
+
+    app.patch("/users/:email",verify,verifyAdmin,async(req,res)=> {
+        const email = req.params.email
+        const data = req.body
+        const query = {email:email}
+        const docs = {$set:{role:data.role}}
+        const result = await userCollection.updateOne(query,docs)
+
+        res.send(result)
+        console.log(result);
+    })
+
+  
 
     const verifyAdmin = async(req,res,next)=> {
         const requester = req.decoded.email
