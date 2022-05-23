@@ -167,8 +167,24 @@ const run = async()=> {
 
     })
 
-    app.get("/order",async(req,res)=> {
-        
+    app.get("/order",verify,async(req,res)=> {
+        const data = await orderCollection.find().toArray()
+        res.send(data)
+
+    })
+    app.get("/order/:email",verify,async(req,res)=> {
+        const email = req.params.email
+        const query = {email:email}
+        const data = await orderCollection.find(query).toArray()
+        res.send(data)
+
+    })
+    app.get("/orderpayment/:id",async(req,res)=> {
+        const id = req.params.id
+        const query = {_id:ObjectId(id)}
+        const data = await orderCollection.findOne(query)
+        res.send(data)
+
     })
         
     } finally{
