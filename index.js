@@ -5,6 +5,7 @@ require("dotenv").config()
 const jwt = require("jsonwebtoken")
 const port = process.env.PORT || 5000
 const app = express()
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY)
 
 
 app.use(cors())
@@ -23,7 +24,7 @@ const run = async()=> {
     const userCollection = client.db("falcon-electronics").collection("users")
     const productCollection = client.db("falcon-electronics").collection("products")
     const orderCollection = client.db("falcon-electronics").collection("orders")
-
+    const paymentCollection = client.db("falcon-electronics").collection("payment");
     // all routes,,,,,,,,,,,,,,,,,,,,,,,,,
     const verifyAdmin = async(req,res,next)=> {
         const requester = req.decoded.email
@@ -186,6 +187,52 @@ const run = async()=> {
         res.send(data)
 
     })
+
+
+    app.patch("/order/:id",async(req,res)=>{
+        const id = req.params.id
+        const query = {_id:ObjectId(id)}
+        const body = req.body
+        const docs = {
+          $set:{
+            paid:true,
+            transactionId:body.transactionId,
+            status:0
+          }
+        }
+  
+        const result = await orderCollection.updateOne(query,docs)
+        const insertedData = await paymentCollection.insertOne(body)
+  
+        res.send({result,insertedData})
+        console.log(body);
+      })
+  
+
+
+     //payment intent..........................
+
+
+
+     app.post("/create-payment-intent", verify,async (req, res) => {
+        const  price  = req.body.price;
+        const newPrice = parseInt(req.body.price)
+        const amount = newPrice * 100
+      
+        // Create a PaymentIntent with the order amount and currency
+        const paymentIntent = await stripe.paymentIntents.create({
+          amount: amount,
+          currency: "usd",
+          payment_method_types:["card"]
+        });
+      
+        console.log("price",newPrice);
+        res.send({
+          clientSecret: paymentIntent.client_secret,
+        });
+      }); 
+
+      
         
     } finally{
 
