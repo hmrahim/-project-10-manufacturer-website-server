@@ -22,6 +22,7 @@ const run = async()=> {
     //    COLLECTIONS.................................
     const userCollection = client.db("falcon-electronics").collection("users")
     const productCollection = client.db("falcon-electronics").collection("products")
+    const orderCollection = client.db("falcon-electronics").collection("orders")
 
     // all routes,,,,,,,,,,,,,,,,,,,,,,,,,
     const verifyAdmin = async(req,res,next)=> {
@@ -101,10 +102,18 @@ const run = async()=> {
     app.put("/product/:id",async(req,res)=> {
         const id = req.params.id
         const data = req.body
-        const query = {_id:id}
+        const query = {_id:ObjectId(id)}
         const options = {upsert:true}
         const docs = {
-            $set:data
+            $set:{
+                title:data.title,
+                price:data.price,
+                quantity:data.quantity,
+                minquantity:data.minquantity,
+                categorie:data.categorie,
+                desc:data.desc,
+                image:data.image
+            }
 
         }
         const result = await productCollection.updateOne(query,docs,options)
@@ -126,6 +135,40 @@ const run = async()=> {
         const data = await productCollection.deleteOne(query)
         
         res.send(data)
+    })
+
+   
+   
+    // ===================product for home page================================
+
+
+    app.get("/productdetails/:id",async(req,res)=> {
+        const id = req.params.id
+        const data = await productCollection.findOne({_id:ObjectId(id)})
+        res.send(data)
+
+    })
+
+    app.get("/allproducts",async(req,res)=> {
+        const data = await productCollection.find().toArray()
+        res.send(data)
+    })
+
+    app.get("/fetureproduct",async(req,res)=> {
+        const data = await productCollection.find().limit(3).toArray()
+        res.send(data)
+    })
+    
+    // ====================orders=========================================================
+    app.post("/order",verify,async(req,res)=> {
+        const data = req.body
+       const result = await orderCollection.insertOne(data)
+       res.send(result)
+
+    })
+
+    app.get("/order",async(req,res)=> {
+        
     })
         
     } finally{
