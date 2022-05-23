@@ -180,6 +180,15 @@ const run = async()=> {
         res.send(data)
 
     })
+    app.delete("/order/:id",async(req,res)=> {
+        const id = req.params.id
+        const result = await orderCollection.deleteOne({_id:ObjectId(id)})
+        res.send(result)
+    })
+
+
+
+
     app.get("/orderpayment/:id",async(req,res)=> {
         const id = req.params.id
         const query = {_id:ObjectId(id)}
