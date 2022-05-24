@@ -25,7 +25,7 @@ const run = async()=> {
     const productCollection = client.db("falcon-electronics").collection("products")
     const orderCollection = client.db("falcon-electronics").collection("orders")
     const paymentCollection = client.db("falcon-electronics").collection("payment");
-    const profileCollection = client.db("falcon-electronics").collection("profile");
+    const reviewCollection = client.db("falcon-electronics").collection("reviews");
     // all routes,,,,,,,,,,,,,,,,,,,,,,,,,
     const verifyAdmin = async(req,res,next)=> {
         const requester = req.decoded.email
@@ -285,6 +285,25 @@ const run = async()=> {
         const data =await userCollection.findOne({email:email})
         res.send(data)
 
+    })
+
+    // ==========================reviews api =========================================
+    // app.post("/reviews",async(req,res)=> {
+    //     const body = req.body
+    //     console.log(body);
+    // })
+
+    app.post("/reviews",verify,async(req,res)=> {
+        const data = req.body
+     
+      const result = await reviewCollection.insertOne(data)
+      res.send(result)
+
+    })
+
+    app.get("/reviews",async(req,res)=> {
+        const data = await reviewCollection.find().toArray()
+        res.send(data)
     })
 
       
