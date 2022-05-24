@@ -27,6 +27,7 @@ const run = async()=> {
     const paymentCollection = client.db("falcon-electronics").collection("payment");
     const reviewCollection = client.db("falcon-electronics").collection("reviews");
     const messageCollection = client.db("falcon-electronics").collection("messages");
+    const blogCollection = client.db("falcon-electronics").collection("blogs");
     // all routes,,,,,,,,,,,,,,,,,,,,,,,,,
     const verifyAdmin = async(req,res,next)=> {
         const requester = req.decoded.email
@@ -289,6 +290,9 @@ const run = async()=> {
     })
 
     // ==========================reviews api =========================================
+    // ==========================reviews api =========================================
+    // ==========================reviews api =========================================
+    // ==========================reviews api =========================================
     // app.post("/reviews",async(req,res)=> {
     //     const body = req.body
     //     console.log(body);
@@ -315,6 +319,9 @@ const run = async()=> {
 
 
     // ===========================Messages api=========================================
+    // ===========================Messages api=========================================
+    // ===========================Messages api=========================================
+    // ===========================Messages api=========================================
     app.post("/message",async(req,res)=> {
         const body = req.body
         const result = await messageCollection.insertOne(body)
@@ -335,6 +342,28 @@ const run = async()=> {
         const result = await messageCollection.deleteOne({_id:ObjectId(id)})
         res.send(result)
     })
+
+    // ===================blog api===========================
+    // ===================blog api===========================
+    // ===================blog api===========================
+    // ===================blog api===========================
+
+app.post("/blogs",async(req,res)=> {
+    const body = req.body
+    const result =await blogCollection.insertOne(body)
+    res.send(result)
+})
+app.get("/blogs",async(req,res)=> {
+    
+    const result =await blogCollection.find().toArray()
+    res.send(result)
+})
+app.delete("/blogs/:id",async(req,res)=> {
+    const id = req.params.id
+    
+    const result =await blogCollection.deleteOne({_id:ObjectId(id)})
+    res.send(result)
+})
 
 
     
