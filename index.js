@@ -25,6 +25,7 @@ const run = async()=> {
     const productCollection = client.db("falcon-electronics").collection("products")
     const orderCollection = client.db("falcon-electronics").collection("orders")
     const paymentCollection = client.db("falcon-electronics").collection("payment");
+    const profileCollection = client.db("falcon-electronics").collection("profile");
     // all routes,,,,,,,,,,,,,,,,,,,,,,,,,
     const verifyAdmin = async(req,res,next)=> {
         const requester = req.decoded.email
@@ -186,6 +187,20 @@ const run = async()=> {
         res.send(result)
     })
 
+    app.patch("/shiptproduct/:id",async(req,res)=> {
+        const id = req.params.id
+        const query = {_id:ObjectId(id)}
+        const docs = {
+            $set:{
+                status:1
+            }
+        }
+
+        const result = await orderCollection.updateOne(query,docs)
+        res.send(result)
+
+    })
+
 
 
 
@@ -240,6 +255,37 @@ const run = async()=> {
           clientSecret: paymentIntent.client_secret,
         });
       }); 
+
+
+    // ======================  update profile=====================================
+    app.patch("/updateprofile/:email",async(req,res)=> {
+        const email = req.params.email
+        const query = {email:email}
+        const body = req.body
+        const options = {upsert:true}
+        const docs = {
+            $set:{
+                phone:body.phone,
+                location:body.location,
+                education:body.education,
+                facebook:body.facebook,
+                instagram:body.instagram,
+                linkdin:body.linkdin
+
+            }
+        }
+        
+        const result = await userCollection.updateOne(query,docs)
+        res.send(result)
+    }) 
+
+
+    app.get("/getprofile/:email",async(req,res)=> {
+        const email = req.params.email
+        const data =await userCollection.findOne({email:email})
+        res.send(data)
+
+    })
 
       
         
