@@ -26,6 +26,7 @@ const run = async()=> {
     const orderCollection = client.db("falcon-electronics").collection("orders")
     const paymentCollection = client.db("falcon-electronics").collection("payment");
     const reviewCollection = client.db("falcon-electronics").collection("reviews");
+    const messageCollection = client.db("falcon-electronics").collection("messages");
     // all routes,,,,,,,,,,,,,,,,,,,,,,,,,
     const verifyAdmin = async(req,res,next)=> {
         const requester = req.decoded.email
@@ -311,6 +312,32 @@ const run = async()=> {
         const result = await reviewCollection.deleteOne(query)
         res.send(result)
     })
+
+
+    // ===========================Messages api=========================================
+    app.post("/message",async(req,res)=> {
+        const body = req.body
+        const result = await messageCollection.insertOne(body)
+        res.send(result)
+    })
+    app.get("/message",verify,async(req,res)=> {
+        
+        const result = await messageCollection.find().toArray()
+        res.send(result)
+    })
+    app.get("/message/:id",verify,async(req,res)=> {
+        const id = req.params.id
+        const result = await messageCollection.findOne({_id:ObjectId(id)})
+        res.send(result)
+    })
+    app.delete("/message/:id",verify,async(req,res)=> {
+        const id = req.params.id
+        const result = await messageCollection.deleteOne({_id:ObjectId(id)})
+        res.send(result)
+    })
+
+
+    
 
       
         
