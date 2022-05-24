@@ -258,7 +258,7 @@ const run = async()=> {
 
 
     // ======================  update profile=====================================
-    app.patch("/updateprofile/:email",async(req,res)=> {
+    app.patch("/updateprofile/:email",verify,async(req,res)=> {
         const email = req.params.email
         const query = {email:email}
         const body = req.body
@@ -280,7 +280,7 @@ const run = async()=> {
     }) 
 
 
-    app.get("/getprofile/:email",async(req,res)=> {
+    app.get("/getprofile/:email",verify,async(req,res)=> {
         const email = req.params.email
         const data =await userCollection.findOne({email:email})
         res.send(data)
@@ -301,7 +301,7 @@ const run = async()=> {
 
     })
 
-    app.get("/reviews",verify,async(req,res)=> {
+    app.get("/reviews",async(req,res)=> {
         const data = await reviewCollection.find().toArray()
         res.send(data)
     })
