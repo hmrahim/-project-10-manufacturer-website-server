@@ -301,9 +301,15 @@ const run = async()=> {
 
     })
 
-    app.get("/reviews",async(req,res)=> {
+    app.get("/reviews",verify,async(req,res)=> {
         const data = await reviewCollection.find().toArray()
         res.send(data)
+    })
+    app.delete("/reviews/:id",verify,async(req,res)=> {
+        const id = req.params.id
+        const query = {_id:ObjectId(id)}
+        const result = await reviewCollection.deleteOne(query)
+        res.send(result)
     })
 
       
