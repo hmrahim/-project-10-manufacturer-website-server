@@ -20,7 +20,10 @@ const run = async()=> {
        await client.connect()
        console.log("Database connected");
 
-    //    COLLECTIONS.................................
+    //  ===================  COLLECTIONS======================
+    //  ===================  COLLECTIONS======================
+    //  ===================  COLLECTIONS======================
+
     const userCollection = client.db("falcon-electronics").collection("users")
     const productCollection = client.db("falcon-electronics").collection("products")
     const orderCollection = client.db("falcon-electronics").collection("orders")
@@ -28,6 +31,7 @@ const run = async()=> {
     const reviewCollection = client.db("falcon-electronics").collection("reviews");
     const messageCollection = client.db("falcon-electronics").collection("messages");
     const blogCollection = client.db("falcon-electronics").collection("blogs");
+    const portfolioCollection = client.db("falcon-electronics").collection("portfolio");
     // all routes,,,,,,,,,,,,,,,,,,,,,,,,,
     const verifyAdmin = async(req,res,next)=> {
         const requester = req.decoded.email
@@ -91,6 +95,11 @@ const run = async()=> {
 
     })
     // =========================products apis======================================
+    // =========================products apis======================================
+    // =========================products apis======================================
+    // =========================products apis======================================
+
+
     app.post("/product",async(req,res)=> {
         const obj = req.body
         const result = await productCollection.insertOne(obj)
@@ -144,6 +153,10 @@ const run = async()=> {
    
    
     // ===================product for home page================================
+    // ===================product for home page================================
+    // ===================product for home page================================
+    // ===================product for home page================================
+    // ===================product for home page================================
 
 
     app.get("/productdetails/:id",async(req,res)=> {
@@ -164,6 +177,11 @@ const run = async()=> {
     })
     
     // ====================orders=========================================================
+    // ====================orders=========================================================
+    // ====================orders=========================================================
+    // ====================orders=========================================================
+
+
     app.post("/order",verify,async(req,res)=> {
         const data = req.body
        const result = await orderCollection.insertOne(data)
@@ -236,7 +254,10 @@ const run = async()=> {
   
 
 
-     //payment intent..........................
+     //=======================payment intent==================================
+     //=======================payment intent==================================
+     //=======================payment intent==================================
+     //=======================payment intent==================================
 
 
 
@@ -246,6 +267,12 @@ const run = async()=> {
         const amount = newPrice * 100
       
         // Create a PaymentIntent with the order amount and currency
+        // Create a PaymentIntent with the order amount and currency
+        // Create a PaymentIntent with the order amount and currency
+        // Create a PaymentIntent with the order amount and currency
+
+
+
         const paymentIntent = await stripe.paymentIntents.create({
           amount: amount,
           currency: "usd",
@@ -260,6 +287,11 @@ const run = async()=> {
 
 
     // ======================  update profile=====================================
+    // ======================  update profile=====================================
+    // ======================  update profile=====================================
+    // ======================  update profile=====================================
+
+
     app.patch("/updateprofile/:email",verify,async(req,res)=> {
         const email = req.params.email
         const query = {email:email}
@@ -322,6 +354,8 @@ const run = async()=> {
     // ===========================Messages api=========================================
     // ===========================Messages api=========================================
     // ===========================Messages api=========================================
+
+
     app.post("/message",async(req,res)=> {
         const body = req.body
         const result = await messageCollection.insertOne(body)
@@ -362,6 +396,40 @@ app.delete("/blogs/:id",async(req,res)=> {
     const id = req.params.id
     
     const result =await blogCollection.deleteOne({_id:ObjectId(id)})
+    res.send(result)
+})
+
+// ====================portfolio api=====================================
+// ====================portfolio api=====================================
+// ====================portfolio api=====================================
+
+app.post("/portfolio",async(req,res)=> {
+    const body = req.body
+    const result = await portfolioCollection.insertOne(body)
+    res.send(result)
+
+})
+
+app.get("/portfolio",async(req,res)=> {
+    const data = await portfolioCollection.find().toArray()
+    res.send(data)
+})
+
+app.put("/portfolio/:id",async(req,res)=> {
+    const id = req.params.id
+    const body = req.body
+    const query = {_id:ObjectId(id)}
+    const option = {upsert:true}
+    const docs = {
+        $set:{
+
+        }
+    }
+})
+
+app.delete("/portfolio/:id",async(req,res)=> {
+    const id = req.params.id
+    const result = await portfolioCollection.deleteOne({_id:ObjectId(id)})
     res.send(result)
 })
 
