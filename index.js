@@ -88,6 +88,12 @@ const run = async()=> {
         res.send(result)
         console.log(result);
     })
+    app.delete("/users/:id",verify,verifyAdmin,async(req,res)=> {
+        const id = req.params.id
+        const result = await userCollection.deleteOne({_id:ObjectId(id)})
+        res.send(result)
+        
+    })
 
     app.put("/maketoken/:email",(req,res)=> {
         const token = jwt.sign({ email:email }, process.env.JWT_SECRET);
